@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CoffeeAlarm</string>
+    <string name="setAlarm">Set Alarm</string>
+    <string name="url">http://192.168.1.206:8083/?a=1</string>
+    <string name="alarmSetAt">Alarm set at %d:%d, %d:%d:%d</string>
+    <string name="cancelAlarm">Cancel alarm</string>
+    <string name="alarmCancelled">Alarm cancelled</string>
+    <string name="getCoffee">Coffee!</string>
+    <string name="noAlarm">No Alarm set!</string>
+</resources>
