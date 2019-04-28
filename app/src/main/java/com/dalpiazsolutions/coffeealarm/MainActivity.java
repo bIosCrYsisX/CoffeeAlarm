@@ -2,13 +2,12 @@ package com.dalpiazsolutions.coffeealarm;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,8 +17,10 @@ public class MainActivity extends AppCompatActivity {
     private Button cancelAlarmButton;
     private TextView txtAlarmInfo;
     private MainController mainController;
-    int hourAlarm;
-    int minuteAlarm;
+    private Switch intervalSwitch;
+    private int hourAlarm;
+    private int minuteAlarm;
+    private boolean interval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +33,19 @@ public class MainActivity extends AppCompatActivity {
         setAlarmButton = findViewById(R.id.btnSetAlarm);
         getCoffeeButton = findViewById(R.id.btnCoffee);
         cancelAlarmButton = findViewById(R.id.btnCancelAlarm);
+        intervalSwitch = findViewById(R.id.swInterval);
         txtAlarmInfo = findViewById(R.id.txtAlarm);
 
         txtAlarmInfo.setText(mainController.checkAlarmAtStart());
 
         timePicker.setIs24HourView(true);
+
+        intervalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                interval = isChecked;
+            }
+        });
 
         timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
@@ -49,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainController.setAlarmTime(hourAlarm, minuteAlarm);
+                mainController.setAlarmTime(hourAlarm, minuteAlarm, interval);
             }
         });
 
@@ -66,5 +75,10 @@ public class MainActivity extends AppCompatActivity {
                 mainController.cancelAlarm();
             }
         });
+    }
+
+    public void update()
+    {
+        txtAlarmInfo.setText(mainController.checkAlarmAtStart());
     }
 }

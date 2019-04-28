@@ -35,4 +35,16 @@ public class PreferenceManager {
         time[1] = prefsTime.getInt("minute", -1);
         return time;
     }
+
+    public void writeInterval(boolean interval)
+    {
+        SharedPreferences.Editor editTime = prefsTime.edit();
+        editTime.putBoolean("interval", interval);
+        editTime.apply();
+    }
+
+    public boolean getInterval()
+    {
+        return prefsTime.getBoolean("interval", false);
+    }
 }
