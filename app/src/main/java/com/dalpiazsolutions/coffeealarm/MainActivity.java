@@ -1,102 +1,51 @@
 package com.dalpiazsolutions.coffeealarm;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.TimePicker;
 
-public class MainActivity extends AppCompatActivity {
-
-    private TimePicker timePicker;
-    private Button setAlarmButton;
-    private Button getCoffeeButton;
-    private Button cancelAlarmButton;
-    private Button lightOnButton;
-    private Button lightOffButton;
-    private TextView txtAlarmInfo;
-    private MainController mainController;
-    private Switch intervalSwitch;
-    private int hourAlarm;
-    private int minuteAlarm;
-    private boolean interval;
+public class MainActivity extends AppCompatActivity implements TabAlarm.OnFragmentInteractionListener, TabCoffee.OnFragmentInteractionListener, TabData.OnFragmentInteractionListener, TabLight.OnFragmentInteractionListener  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainController = new MainController(this);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
 
-        timePicker = findViewById(R.id.alarmTimePicker);
-        setAlarmButton = findViewById(R.id.btnSetAlarm);
-        getCoffeeButton = findViewById(R.id.btnCoffee);
-        cancelAlarmButton = findViewById(R.id.btnCancelAlarm);
-        lightOnButton = findViewById(R.id.btnLightOn);
-        lightOffButton= findViewById(R.id.btnLightOff);
-        intervalSwitch = findViewById(R.id.swInterval);
-        txtAlarmInfo = findViewById(R.id.txtAlarm);
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.coffee)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.alarm)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.light)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.data)));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        txtAlarmInfo.setText(mainController.checkAlarmAtStart());
+        final ViewPager viewPager = findViewById(R.id.pager);
+        final PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        timePicker.setIs24HourView(true);
-
-        intervalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                interval = isChecked;
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
             }
-        });
 
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                hourAlarm = hourOfDay;
-                minuteAlarm = minute;
+            public void onTabUnselected(TabLayout.Tab tab) {
+
             }
-        });
 
-        setAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                mainController.setAlarmTime(hourAlarm, minuteAlarm, interval);
-            }
-        });
+            public void onTabReselected(TabLayout.Tab tab) {
 
-        getCoffeeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainController.getCoffee();
-            }
-        });
-
-        cancelAlarmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainController.cancelAlarm();
-            }
-        });
-
-        lightOnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainController.lightOn();
-            }
-        });
-
-        lightOffButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainController.lightOff();
             }
         });
     }
 
-    public void update()
-    {
-        txtAlarmInfo.setText(mainController.checkAlarmAtStart());
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

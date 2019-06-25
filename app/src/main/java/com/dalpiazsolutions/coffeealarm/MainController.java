@@ -111,7 +111,6 @@ public class MainController {
         {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
         }
-        updateActivity();
         Toast.makeText(context, String.format(Locale.getDefault(), context.getString(R.string.alarmSetAtDate), hour, minute, day_of_month, month, year), Toast.LENGTH_LONG).show();
     }
 
@@ -121,7 +120,6 @@ public class MainController {
             alarmManager.cancel(alarmIntent);
             Toast.makeText(context, context.getString(R.string.alarmCancelled), Toast.LENGTH_SHORT).show();
             preferenceManager.writeAlarmTime(-1, -1);
-            updateActivity();
         }
     }
 
@@ -144,14 +142,6 @@ public class MainController {
             {
                 return String.format(Locale.getDefault(), context.getString(R.string.alarmSetAt), values[0], values[1]);
             }
-        }
-    }
-
-    private void updateActivity()
-    {
-        if(mainActivity != null)
-        {
-            mainActivity.update();
         }
     }
 }

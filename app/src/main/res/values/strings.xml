@@ -17,4 +17,11 @@
     <string name="Off">OFF</string>
     <string name="lightOff">Light Off</string>
     <string name="lightON">Light On</string>
+    <string name="coffee">Coffee</string>
+    <string name="alarm">Alarm</string>
+    <string name="data">Data</string>
+    <string name="light">Light</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
