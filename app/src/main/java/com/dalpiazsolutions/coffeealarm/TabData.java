@@ -3,10 +3,18 @@ package com.dalpiazsolutions.coffeealarm;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -26,6 +34,11 @@ public class TabData extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView textTemp;
+    private TextView textHumidity;
+    private HTTPDownloader httpDownloader;
+    private float temp;
+    private float humidity;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,6 +78,32 @@ public class TabData extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragmentdata, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        textTemp = view.findViewById(R.id.textTemp);
+        textHumidity = view.findViewById(R.id.textHumidity);
+
+        try {
+            httpDownloader = new HTTPDownloader();
+            String site = httpDownloader.execute(getString(R.string.urlSite)).get();
+            float[] values = new float[2];
+
+            values[0] = Float.parseFloat(site.substring(146, 151));
+            values[1] = Float.parseFloat(site.substring(155, 160));
+
+            textTemp.setText(String.format(Locale.getDefault(), getString(R.string.temp), values[0]));
+            textHumidity.setText(String.format(Locale.getDefault(), getString(R.string.humidity), values[1]));
+
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 
 /**
@@ -29,8 +30,8 @@ public class TabLight extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Button lightOnButton;
-    private Button lightOffButton;
+    private ImageView lightOn;
+    private ImageView lightOff;
     private MainController mainController;
 
     private OnFragmentInteractionListener mListener;
@@ -77,19 +78,19 @@ public class TabLight extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        lightOnButton = view.findViewById(R.id.btnLightOn);
-        lightOffButton= view.findViewById(R.id.btnLightOff);
+        lightOn = view.findViewById(R.id.imageLightOn);
+        lightOff = view.findViewById(R.id.imageLightOff);
 
         mainController = new MainController(getContext());
 
-        lightOnButton.setOnClickListener(new View.OnClickListener() {
+        lightOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainController.lightOn();
             }
         });
 
-        lightOffButton.setOnClickListener(new View.OnClickListener() {
+        lightOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainController.lightOff();

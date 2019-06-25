@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 
 /**
@@ -29,8 +30,8 @@ public class TabCoffee extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Button getCoffeeButton;
     private MainController mainController;
+    private ImageView coffeeView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,10 +77,10 @@ public class TabCoffee extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getCoffeeButton = view.findViewById(R.id.btnCoffee);
+        coffeeView = view.findViewById(R.id.coffeeView);
         mainController = new MainController(getContext());
 
-        getCoffeeButton.setOnClickListener(new View.OnClickListener() {
+        coffeeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainController.getCoffee();
