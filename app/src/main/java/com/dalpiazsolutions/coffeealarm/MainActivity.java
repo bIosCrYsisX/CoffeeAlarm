@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
     private Button setAlarmButton;
     private Button getCoffeeButton;
     private Button cancelAlarmButton;
+    private Button lightOnButton;
+    private Button lightOffButton;
     private TextView txtAlarmInfo;
     private MainController mainController;
     private Switch intervalSwitch;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         setAlarmButton = findViewById(R.id.btnSetAlarm);
         getCoffeeButton = findViewById(R.id.btnCoffee);
         cancelAlarmButton = findViewById(R.id.btnCancelAlarm);
+        lightOnButton = findViewById(R.id.btnLightOn);
+        lightOffButton= findViewById(R.id.btnLightOff);
         intervalSwitch = findViewById(R.id.swInterval);
         txtAlarmInfo = findViewById(R.id.txtAlarm);
 
@@ -73,6 +77,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mainController.cancelAlarm();
+            }
+        });
+
+        lightOnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainController.lightOn();
+            }
+        });
+
+        lightOffButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainController.lightOff();
             }
         });
     }

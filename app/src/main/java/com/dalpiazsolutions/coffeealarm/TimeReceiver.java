@@ -12,5 +12,6 @@ public class TimeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         mainController = new MainController(context);
         mainController.getCoffee();
+        mainController.lightOn();
     }
 }

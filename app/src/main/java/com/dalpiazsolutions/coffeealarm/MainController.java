@@ -47,7 +47,33 @@ public class MainController {
     {
         httpDownloader = new HTTPDownloader();
         try {
-            httpDownloader.execute(context.getString(R.string.url)).get();
+            httpDownloader.execute(context.getString(R.string.urlCoffee)).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void lightOn()
+    {
+        httpDownloader = new HTTPDownloader();
+        try {
+            httpDownloader.execute(context.getString(R.string.urlLightOn)).get();
+            Toast.makeText(context, context.getString(R.string.lightON), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void lightOff()
+    {
+        httpDownloader = new HTTPDownloader();
+        try {
+            httpDownloader.execute(context.getString(R.string.urlLightOff)).get();
+            Toast.makeText(context, context.getString(R.string.lightOff), Toast.LENGTH_SHORT).show();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
