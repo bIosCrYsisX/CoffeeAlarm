@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -36,9 +37,11 @@ public class TabData extends Fragment {
     private String mParam2;
     private TextView textTemp;
     private TextView textHumidity;
-    private HTTPDownloader httpDownloader;
-    private float temp;
-    private float humidity;
+    private TextView textVoltage;
+    private TextView textTempOut;
+    private TextView textHumidOut;
+    private ImageView iconWeather;
+    private MainController mainController;
 
     private OnFragmentInteractionListener mListener;
 
@@ -84,26 +87,28 @@ public class TabData extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mainController = new MainController(getContext());
+
         textTemp = view.findViewById(R.id.textTemp);
         textHumidity = view.findViewById(R.id.textHumidity);
+        textVoltage = view.findViewById(R.id.textVoltage);
+        textTempOut = view.findViewById(R.id.textTempOut);
+        textHumidOut = view.findViewById(R.id.textHumidOut);
 
-        try {
-            httpDownloader = new HTTPDownloader();
-            String site = httpDownloader.execute(getString(R.string.urlSite)).get();
-            float[] values = new float[2];
+        iconWeather = view.findViewById(R.id.iconWeather);
 
-            values[0] = Float.parseFloat(site.substring(146, 151));
-            values[1] = Float.parseFloat(site.substring(155, 160));
+        float inValues[] = mainController.getInsideWeather();
+        textTemp.setText(String.format(Locale.getDefault(), getString(R.string.temp), inValues[0]));
+        textHumidity.setText(String.format(Locale.getDefault(), getString(R.string.humidity), inValues[1]));
+        textVoltage.setText(String.format(Locale.getDefault(), getString(R.string.voltage), inValues[2]));
 
-            textTemp.setText(String.format(Locale.getDefault(), getString(R.string.temp), values[0]));
-            textHumidity.setText(String.format(Locale.getDefault(), getString(R.string.humidity), values[1]));
+        double outValues[] = mainController.getOutsideWeather();
 
+        textTempOut.setText(String.format(Locale.getDefault(), getString(R.string.temp), outValues[0]));
+        textHumidOut.setText(String.format(Locale.getDefault(), getString(R.string.humidity), outValues[1]));
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        iconWeather.setImageBitmap(mainController.getIcon());
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

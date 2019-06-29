@@ -4,8 +4,14 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -45,40 +51,19 @@ public class MainController {
 
     public void getCoffee()
     {
-        httpDownloader = new HTTPDownloader();
-        try {
-            httpDownloader.execute(context.getString(R.string.urlCoffee)).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        getSite(context.getString(R.string.urlCoffee));
     }
 
     public void lightOn()
     {
-        httpDownloader = new HTTPDownloader();
-        try {
-            httpDownloader.execute(context.getString(R.string.urlLightOn)).get();
-            Toast.makeText(context, context.getString(R.string.lightON), Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        getSite(context.getString(R.string.urlLightOn));
+        Toast.makeText(context, context.getString(R.string.lightON), Toast.LENGTH_SHORT).show();
     }
 
     public void lightOff()
     {
-        httpDownloader = new HTTPDownloader();
-        try {
-            httpDownloader.execute(context.getString(R.string.urlLightOff)).get();
-            Toast.makeText(context, context.getString(R.string.lightOff), Toast.LENGTH_SHORT).show();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        getSite(context.getString(R.string.urlLightOff));
+        Toast.makeText(context, context.getString(R.string.lightOff), Toast.LENGTH_SHORT).show();
     }
 
     public void setAlarmTime(int hour, int minute, boolean interval)
@@ -143,5 +128,77 @@ public class MainController {
                 return String.format(Locale.getDefault(), context.getString(R.string.alarmSetAt), values[0], values[1]);
             }
         }
+    }
+
+    public float[] getInsideWeather()
+    {
+        String site = getSite(context.getString(R.string.urlSite));
+        float[] values = new float[3];
+        values[0] = Float.parseFloat(site.substring(146, 151));
+        values[1] = Float.parseFloat(site.substring(155, 160));
+        values[2] = Float.parseFloat(site.substring(172, 176));
+        return values;
+    }
+
+    public double[] getOutsideWeather()
+    {
+        String site = getSite(String.format(Locale.getDefault(), context.getString(R.string.jsonURL), context.getString(R.string.appid), context.getString(R.string.linz)));
+        double[] values = new double[2];
+        try {
+            JSONObject jsonObject = new JSONObject(site);
+            String partString = jsonObject.getString("main");
+            jsonObject = new JSONObject(partString);
+            for(int i = 0; i < jsonObject.length(); i++)
+            {
+                values[0] = jsonObject.getDouble("temp") - 273.15;
+                values[1] = jsonObject.getDouble("humidity");
+            }
+
+            return values;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Bitmap getIcon()
+    {
+        try {
+            String iconID = "";
+            String site = getSite(String.format(Locale.getDefault(), context.getString(R.string.jsonURL), context.getString(R.string.appid), context.getString(R.string.linz)));
+            JSONObject jsonObject = new JSONObject(site);
+            String partString = jsonObject.getString("weather");
+            JSONArray jsonArray = new JSONArray(partString);
+            for(int i = 0; i < jsonArray.length(); i++)
+            {
+                jsonObject = jsonArray.getJSONObject(i);
+                iconID = jsonObject.getString("icon");
+            }
+
+            ImageDownloader iconDownloader = new ImageDownloader();
+            Log.i("bitmap", String.format(Locale.getDefault(), context.getString(R.string.iconURL), iconID));
+            return iconDownloader.execute(String.format(Locale.getDefault(), context.getString(R.string.iconURL), iconID)).get();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String getSite(String url)
+    {
+        httpDownloader = new HTTPDownloader();
+        try {
+            return httpDownloader.execute(url).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
