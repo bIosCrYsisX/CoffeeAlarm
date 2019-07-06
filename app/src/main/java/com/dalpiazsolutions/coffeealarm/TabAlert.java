@@ -10,42 +10,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.ListView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TabAlarm.OnFragmentInteractionListener} interface
+ * {@link TabAlert.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TabAlarm#newInstance} factory method to
+ * Use the {@link TabAlert#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TabAlarm extends Fragment {
+public class TabAlert extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ListView listAction;
+    private MainController mainController;
+    private Button btnUploadDB;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private TimePicker timePicker;
-    private Button setAlarmButton;
-    private Button cancelAlarmButton;
-    private TextView txtAlarmInfo;
-    private MainController mainController;
-    private Switch intervalSwitch;
-    private int hourAlarm;
-    private int minuteAlarm;
-    private boolean interval;
 
     private OnFragmentInteractionListener mListener;
 
-    public TabAlarm() {
+    public TabAlert() {
         // Required empty public constructor
     }
 
@@ -55,11 +46,11 @@ public class TabAlarm extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TabAlarm.
+     * @return A new instance of fragment TabAlert.
      */
     // TODO: Rename and change types and number of parameters
-    public static TabAlarm newInstance(String param1, String param2) {
-        TabAlarm fragment = new TabAlarm();
+    public static TabAlert newInstance(String param1, String param2) {
+        TabAlert fragment = new TabAlert();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -80,55 +71,27 @@ public class TabAlarm extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragmentalarm, container, false);
+        return inflater.inflate(R.layout.fragmentalert, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        timePicker = view.findViewById(R.id.alarmTimePicker);
-        setAlarmButton = view.findViewById(R.id.btnSetAlarm);
-        cancelAlarmButton = view.findViewById(R.id.btnCancelAlarm);
-        intervalSwitch = view.findViewById(R.id.swInterval);
-        txtAlarmInfo = view.findViewById(R.id.txtAlarm);
-
+        listAction = view.findViewById(R.id.listAction);
+        btnUploadDB = view.findViewById(R.id.btnUploadDB);
         mainController = new MainController(getContext());
 
-        txtAlarmInfo.setText(mainController.checkAlarmAtStart());
+        listAction.setAdapter(mainController.getActionValues());
 
-        timePicker.setIs24HourView(true);
-
-        intervalSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                interval = isChecked;
-            }
-        });
-
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                hourAlarm = hourOfDay;
-                minuteAlarm = minute;
-            }
-        });
-
-        setAlarmButton.setOnClickListener(new View.OnClickListener() {
+        btnUploadDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainController.setAlarmTime(hourAlarm, minuteAlarm, interval);
-                txtAlarmInfo.setText(mainController.checkAlarmAtStart());
+                mainController.uploadDB();
             }
         });
 
-        cancelAlarmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainController.cancelAlarm();
-                txtAlarmInfo.setText(mainController.checkAlarmAtStart());
-            }
-        });
+        mainController.getPrices();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

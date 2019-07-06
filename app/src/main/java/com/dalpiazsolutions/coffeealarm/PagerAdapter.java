@@ -1,8 +1,8 @@
 package com.dalpiazsolutions.coffeealarm;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 
@@ -29,6 +29,9 @@ public class PagerAdapter extends FragmentPagerAdapter {
             case 3:
                 TabData tabData = new TabData();
                 return tabData;
+            case 4:
+                TabAlert tabAlert = new TabAlert();
+                return tabAlert;
             default: return null;
         }
     }

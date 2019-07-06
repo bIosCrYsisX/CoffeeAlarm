@@ -2,11 +2,11 @@ package com.dalpiazsolutions.coffeealarm;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements TabAlarm.OnFragmentInteractionListener, TabCoffee.OnFragmentInteractionListener, TabData.OnFragmentInteractionListener, TabLight.OnFragmentInteractionListener  {
+public class MainActivity extends AppCompatActivity implements TabAlarm.OnFragmentInteractionListener, TabCoffee.OnFragmentInteractionListener, TabData.OnFragmentInteractionListener, TabLight.OnFragmentInteractionListener, TabAlert.OnFragmentInteractionListener  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements TabAlarm.OnFragme
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.alarm)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.light)));
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.data)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.alert)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.pager);
