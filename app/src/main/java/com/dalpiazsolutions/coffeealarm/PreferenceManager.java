@@ -73,4 +73,27 @@ public class PreferenceManager {
             return true;
         }
     }
+
+    public void setDayUploaded()
+    {
+        SharedPreferences.Editor editTime = prefsTime.edit();
+        calendar = Calendar.getInstance();
+        editTime.putInt("uploadedDay", calendar.get(Calendar.DAY_OF_MONTH));
+        editTime.apply();
+    }
+
+    public boolean getAlreadyUploaded()
+    {
+        calendar = Calendar.getInstance();
+
+        if (prefsTime.getInt("uploadedDay", 0) != calendar.get(Calendar.DAY_OF_MONTH))
+        {
+            return false;
+        }
+
+        else
+        {
+            return true;
+        }
+    }
 }

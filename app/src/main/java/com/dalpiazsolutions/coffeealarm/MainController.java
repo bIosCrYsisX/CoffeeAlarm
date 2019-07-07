@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -56,6 +57,8 @@ public class MainController {
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
+
+        Log.i("DB_PATH", context.getDatabasePath("actionDB").getAbsolutePath());
     }
 
     public MainController(Context context)
@@ -70,6 +73,8 @@ public class MainController {
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
+
+        Log.i("DB_PATH", context.getDatabasePath("actionDB").getAbsolutePath());
     }
 
     public void getCoffee()
@@ -328,7 +333,7 @@ public class MainController {
 
     public void uploadDB()
     {
-        if(preferenceManager.getAlreadyChecked())
+        if(preferenceManager.getAlreadyUploaded())
         {
             Toast.makeText(context, context.getString(R.string.alreadyUploaded), Toast.LENGTH_SHORT).show();
         }
@@ -365,6 +370,7 @@ public class MainController {
                                 Toast.makeText(context, context.getString(R.string.finished), Toast.LENGTH_SHORT).show();
                                 setState(false);
                                 nukeTable();
+                                preferenceManager.setDayUploaded();
                             } else {
                                 Toast.makeText(context, context.getString(R.string.failed), Toast.LENGTH_SHORT).show();
                             }
@@ -394,6 +400,13 @@ public class MainController {
     public void getPrices()
     {
         ItemDAO itemDAO = priceDB.getItemDAO();
-        Log.i("numberOfValues", Integer.toString(itemDAO.getItems().size()));
+        List<Item> items = itemDAO.getItems();
+        Log.i("numberOfValues", Integer.toString(items.size()));
+
+        //Log.i("item", String.format(Locale.getDefault(), context.getString(R.string.listString), items.get(0).getPrice(), items.get(0).getShop(), items.get(0).getStart(), items.get(0).getEnd()));
+        for(int i = 0; i < items.size(); i++)
+        {
+            Log.i("item", String.format(Locale.getDefault(), context.getString(R.string.listString), items.get(i).getPrice(), items.get(i).getShop(), items.get(i).getStart(), items.get(i).getEnd()));
+        }
     }
 }
