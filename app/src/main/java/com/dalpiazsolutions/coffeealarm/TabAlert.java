@@ -80,7 +80,7 @@ public class TabAlert extends Fragment {
 
         listAction = view.findViewById(R.id.listAction);
         btnUploadDB = view.findViewById(R.id.btnUploadDB);
-        mainController = new MainController(getContext());
+        mainController = new MainController(getContext().getApplicationContext());
 
         listAction.setAdapter(mainController.getActionValues());
 

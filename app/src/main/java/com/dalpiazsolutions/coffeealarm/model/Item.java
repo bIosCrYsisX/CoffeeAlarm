@@ -15,11 +15,17 @@ public class Item {
     @ColumnInfo(name = "shop")
     private String shop;
 
-    @ColumnInfo(name = "start")
-    private String start;
+    @ColumnInfo(name = "startDate")
+    private String startDate;
 
-    @ColumnInfo(name = "end")
-    private String end;
+    @ColumnInfo(name = "startTime")
+    private String startTime;
+
+    @ColumnInfo(name = "endDate")
+    private String endDate;
+
+    @ColumnInfo(name = "endTime")
+    private String endTime;
 
     public Long getId() {
         return id;
@@ -45,19 +51,35 @@ public class Item {
         this.shop = shop;
     }
 
-    public String getStart() {
-        return start;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getEnd() {
-        return end;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setEnd(String end) {
-        this.end = end;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,24 +44,6 @@ public class MainController {
     private int day_of_month;
     private int month;
     private int year;
-    private boolean state = false;
-
-    public MainController(MainActivity mainActivity)
-    {
-        this.mainActivity = mainActivity;
-        this.context = mainActivity;
-        preferenceManager = new PreferenceManager(context);
-        preferenceManager.start();
-        alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, TimeReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        priceDB = Room.databaseBuilder(mainActivity.getApplicationContext(), PriceDB.class, "actionDB")
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
-
-        Log.i("DB_PATH", context.getDatabasePath("actionDB").getAbsolutePath());
-    }
 
     public MainController(Context context)
     {
@@ -267,37 +251,53 @@ public class MainController {
             pattern = Pattern.compile("validFrom\":\"(.*?)\"");
             matcher = pattern.matcher(site);
 
-            LinkedList<String> starts = new LinkedList<>();
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd:MM:yyyy", Locale.getDefault());
+            LocalDateTime date = LocalDateTime.parse("2018-04-10T04:00:00Z", inputFormatter);
+            String formattedDate = outputFormatter.format(date);
+            System.out.println(formattedDate);
+
+            LinkedList<String> startTimes = new LinkedList<>();
+            LinkedList<String> startDates = new LinkedList<>();
 
             i = 0;
             while (matcher.find())
             {
-                starts.add(matcher.group(1));
-                Log.i("starts", starts.get(i));
+                outputFormatter = DateTimeFormatter.ofPattern("dd:MM:yyyy", Locale.getDefault());
+                date = LocalDateTime.parse(matcher.group(1), inputFormatter);
+                startDates.add(outputFormatter.format(date));
+                outputFormatter = DateTimeFormatter.ofPattern("HH:mm:ss", Locale.getDefault());
+                startTimes.add(outputFormatter.format(date));
+                Log.i("startsTimes", startTimes.get(i));
                 i++;
             }
-            Log.i("length", Integer.toString(starts.size()));
+            Log.i("length", Integer.toString(startTimes.size()));
 
             pattern = Pattern.compile("validTo\":\"(.*?)\"");
             matcher = pattern.matcher(site);
 
-            LinkedList<String> ends = new LinkedList<>();
+            LinkedList<String> endDates = new LinkedList<>();
+            LinkedList<String> endTimes = new LinkedList<>();
 
             i = 0;
             while (matcher.find())
             {
-                ends.add(matcher.group(1));
-                Log.i("starts", ends.get(i));
+                outputFormatter = DateTimeFormatter.ofPattern("dd:MM:yyyy", Locale.getDefault());
+                date = LocalDateTime.parse(matcher.group(1), inputFormatter);
+                endDates.add(outputFormatter.format(date));
+                outputFormatter = DateTimeFormatter.ofPattern("HH:mm:ss", Locale.getDefault());
+                endTimes.add(outputFormatter.format(date));
+                Log.i("endDates", endDates.get(i));
                 i++;
             }
-            Log.i("length", Integer.toString(ends.size()));
+            Log.i("length", Integer.toString(endDates.size()));
 
             if(!preferenceManager.getAlreadyChecked())
             {
                 for(i = 0; i < prices.size(); i++)
                 {
-                    listStrings.add(String.format(Locale.getDefault(), context.getString(R.string.listString), prices.get(i), shops.get(i), starts.get(i), ends.get(i)));
-                    insertItem(prices.get(i), shops.get(i), starts.get(i), ends.get(i));
+                    listStrings.add(String.format(Locale.getDefault(), context.getString(R.string.listString), prices.get(i), shops.get(i), startDates.get(i), startTimes.get(i), endDates.get(i), endTimes.get(i)));
+                    insertItem(prices.get(i), shops.get(i), startDates.get(i), startTimes.get(i), endDates.get(i), endTimes.get(i));
                 }
                 preferenceManager.setDayChecked();
             }
@@ -306,7 +306,7 @@ public class MainController {
             {
                 for(i = 0; i < prices.size(); i++)
                 {
-                    listStrings.add(String.format(Locale.getDefault(), context.getString(R.string.listString), prices.get(i), shops.get(i), starts.get(i), ends.get(i)));
+                    listStrings.add(String.format(Locale.getDefault(), context.getString(R.string.listString), prices.get(i), shops.get(i), startDates.get(i), startTimes.get(i), endDates.get(i), endTimes.get(i)));
                 }
             }
 
@@ -319,14 +319,16 @@ public class MainController {
         return new ArrayAdapter(context, android.R.layout.simple_list_item_1, listStrings);
     }
 
-    public void insertItem(float price, String shop, String start, String end)
+    public void insertItem(float price, String shop, String startDate, String startTime, String endDate, String endTime)
     {
         ItemDAO itemDAO = priceDB.getItemDAO();
         Item item = new Item();
         item.setPrice(price);
         item.setShop(shop);
-        item.setStart(start);
-        item.setEnd(end);
+        item.setStartDate(startDate);
+        item.setStartTime(startTime);
+        item.setEndDate(endDate);
+        item.setEndTime(endTime);
         itemDAO.insert(item);
         Log.i("inserted", "inserted");
     }
@@ -353,30 +355,8 @@ public class MainController {
                     if (ssid.equals(context.getString(R.string.SSID))) {
                         Log.i("equal", "equal");
 
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.i("Thread", "started");
-                                DBUploader dbUploader = new DBUploader(context);
-                                setState(dbUploader.uploadDB());
-                            }
-                        });
-                        thread.start();
-
-                        try {
-                            thread.join();
-
-                            if (isState()) {
-                                Toast.makeText(context, context.getString(R.string.finished), Toast.LENGTH_SHORT).show();
-                                setState(false);
-                                nukeTable();
-                                preferenceManager.setDayUploaded();
-                            } else {
-                                Toast.makeText(context, context.getString(R.string.failed), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        DBUploader dbUploader = new DBUploader(context);
+                        dbUploader.execute();
                     }
                 }
             }
@@ -389,14 +369,6 @@ public class MainController {
         itemDAO.nukeTable();
     }
 
-    public boolean isState() {
-        return state;
-    }
-
-    public void setState(boolean state) {
-        this.state = state;
-    }
-
     public void getPrices()
     {
         ItemDAO itemDAO = priceDB.getItemDAO();
@@ -406,7 +378,7 @@ public class MainController {
         //Log.i("item", String.format(Locale.getDefault(), context.getString(R.string.listString), items.get(0).getPrice(), items.get(0).getShop(), items.get(0).getStart(), items.get(0).getEnd()));
         for(int i = 0; i < items.size(); i++)
         {
-            Log.i("item", String.format(Locale.getDefault(), context.getString(R.string.listString), items.get(i).getPrice(), items.get(i).getShop(), items.get(i).getStart(), items.get(i).getEnd()));
+            Log.i("item", String.format(Locale.getDefault(), context.getString(R.string.listString), items.get(i).getPrice(), items.get(i).getShop(), items.get(i).getStartDate(), items.get(i).getStartTime(), items.get(i).getEndDate(), items.get(i).getEndTime()));
         }
     }
 }

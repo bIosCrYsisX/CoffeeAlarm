@@ -36,7 +36,7 @@
     <string name="fileName">action%d</string>
     <string name="fileNameWAL">action%d-wal</string>
     <string name="fileNameSHM">action%d-shm</string>
-    <string name="listString">%.2f, %s, %s, %s</string>
+    <string name="listString">%.2f, %s, %s, %s, %s, %s</string>
     <string name="uploadDB">Upload database</string>
     <string name="finished">Upload finished</string>
     <string name="failed">Upload failed</string>

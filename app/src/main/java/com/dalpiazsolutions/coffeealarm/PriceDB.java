@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 import com.dalpiazsolutions.coffeealarm.model.Item;
 import com.dalpiazsolutions.coffeealarm.dao.ItemDAO;
 
-@Database(entities = {Item.class}, version = 1)
+@Database(entities = {Item.class}, version = 2)
 public abstract class PriceDB extends RoomDatabase {
     public abstract ItemDAO getItemDAO();
 }
