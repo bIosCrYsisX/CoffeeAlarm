@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">CoffeeAlarm</string>
     <string name="setAlarm">Set Alarm</string>
-    <string name="urlSite">http://192.168.1.176:8083</string>
-    <string name="urlCoffee">http://192.168.1.176:8083/?a=1</string>
-    <string name="urlLightOn">http://192.168.1.176:8083/?a=2</string>
-    <string name="urlLightOff">http://192.168.1.176:8083/?a=3</string>
+    <string name="urlSite">http://192.168.0.6:8083</string>
+    <string name="urlCoffee">http://192.168.0.6:8083/?a=1</string>
+    <string name="urlLightOn">http://192.168.0.6:8083/?a=2</string>
+    <string name="urlLightOff">http://192.168.0.6:8083/?a=3</string>
     <string name="alarmSetAtDate">Alarm set at %d:%d, %d:%d:%d</string>
     <string name="alarmSetAt">Alarm set at %d:%d</string>
     <string name="alarmSetAt24">Alarm set at %d:%d, 24 hour interval</string>

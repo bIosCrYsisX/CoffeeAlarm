@@ -352,11 +352,17 @@ public class MainController {
                     Log.i("SSID", ssid);
                     Log.i("SSID", context.getString(R.string.SSID));
 
-                    if (ssid.equals(context.getString(R.string.SSID))) {
-                        Log.i("equal", "equal");
+                    String[] ssids = context.getString(R.string.SSID).split(",");
 
-                        DBUploader dbUploader = new DBUploader(context);
-                        dbUploader.execute();
+                    for(int i = 0; i < ssids.length; i++)
+                    {
+                        if (ssid.equals(ssids[i]))
+                        {
+                            Log.i("equal", "equal");
+
+                            DBUploader dbUploader = new DBUploader(context);
+                            dbUploader.execute();
+                        }
                     }
                 }
             }
